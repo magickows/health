@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift & Cut Tracker</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --accent-green: #238636;
+            --accent-green-hover: #2ea043;
+            --danger: #da3633;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sober-header {
+            text-align: center;
+            background: linear-gradient(135deg, #1f6feb, #238636);
+            border: none;
+            padding: 20px;
+        }
+
+        .sober-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .row-spread {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            background-color: #21262d;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            background-color: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+            box-shadow: 0 0 12px rgba(35, 134, 54, 0.4);
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-btn {
+            background-color: #21262d;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-btn:active, .toggle-btn:active {
+            transform: scale(0.93);
+        }
+
+        .step-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .workout-list {
+            margin-top: 6px;
+            padding-left: 18px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .wins-card {
+            border-color: #238636;
+            background: linear-gradient(180deg, #161b22, #0f1d13);
+        }
+
+        .wins-card ul {
+            list-style-type: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: #d2d6dc;
+        }
+
+        .save-btn {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(35, 134, 54, 0.4);
+            transition: background-color 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .save-btn:hover {
+            background-color: var(--accent-green-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card sober-header">
+            <span class="label" style="color: #d2d6dc;">Current Milestone</span>
+            <h1>DAY 96 SOBER</h1>
+        </div>
+
+        <div class="card">
+            <span class="label">⚖️ Weight (lbs)</span>
+            <div class="row-spread">
+                <span id="weightDisplay" class="step-value" style="text-align: left; font-size: 1.5rem;">172.0</span>
+                <div class="stepper">
+                    <button class="step-btn" onclick="adjustWeight(-0.5)">-</button>
+                    <button class="step-btn" onclick="adjustWeight(0.5)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card row-spread">
+            <div>
+                <span class="label">⏳ Fasting Window</span>
+                <p style="font-size: 0.9rem; font-weight: 600; margin-top: 2px;">8:00 AM – 4:00 PM</p>
+            </div>
+            <button id="fastBtn" class="toggle-btn active" onclick="toggleState('fast')">ON TRACK</button>
+        </div>
+
+        <div class="card">
+            <div class="row-spread">
+                <div>
+                    <span class="label">💪 25lb Strength Circuit</span>
+                    <p style="font-size: 0.9rem; font-weight: 600; margin-top: 2px;">Pre-Shift Routine</p>
+                </div>
+                <button id="workoutBtn" class="toggle-btn" onclick="toggleState('workout')">DONE</button>
+            </div>
+            <ul class="workout-list">
+                <li>• 25lb Goblet Squats</li>
+                <li>• 25lb Bent-Over Rows</li>
+                <li>• 25lb Overhead Presses</li>
+                <li>• 25lb Lunges</li>
+                <li>• 25lb Woodchoppers</li>
+            </ul>
+        </div>
+
+        <div class="card row-spread">
+            <div>
+                <span class="label">🍵 Dandelion Tea</span>
+                <p style="font-size: 0.9rem; font-weight: 600; margin-top: 2px;">Shift Cups</p>
+            </div>
+            <div class="stepper">
+                <button class="step-btn" onclick="adjustTea(-1)">-</button>
+                <span id="teaDisplay" class="step-value">2</span>
+                <button class="step-btn" onclick="adjustTea(1)">+</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="label">🏠 Real Estate Study (Goal: 74 hrs left)</span>
+            <div class="row-spread">
+                <div>
+                    <span id="reDisplay" class="step-value" style="font-size: 1.5rem; text-align: left;">0.0 hrs</span>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Logged Today</p>
+                </div>
+                <div class="stepper">
+                    <button class="step-btn" onclick="adjustRE(-0.5)">-</button>
+                    <button class="step-btn" onclick="adjustRE(0.5)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card wins-card">
+            <span class="label" style="color: #3fb950;">🏆 Wins For Today</span>
+            <ul>
+                <li>• 96 Days Alcohol-Free (Liver recovery active)</li>
+                <li>• 1 Day closer to Real Estate License</li>
+                <li>• Fasting window protecting fat-burning zone</li>
+            </ul>
+        </div>
+
+        <button class="save-btn" onclick="saveToSheets()">Save To Google Sheets</button>
+    </div>
+
+    <script>
+        // App State Variables
+        let state = {
+            weight: 172.0,
+            fasting: true,
+            workout: false,
+            tea: 2,
+            realEstateHours: 0.0
+        };
+
+        function adjustWeight(amount) {
+            state.weight = Math.max(100, Math.round((state.weight + amount) * 10) / 10);
+            document.getElementById('weightDisplay').innerText = state.weight.toFixed(1);
+        }
+
+        function toggleState(type) {
+            if (type === 'fast') {
+                state.fasting = !state.fasting;
+                let btn = document.getElementById('fastBtn');
+                btn.innerText = state.fasting ? "ON TRACK" : "SKIPPED";
+                btn.classList.toggle('active', state.fasting);
+            } else if (type === 'workout') {
+                state.workout = !state.workout;
+                let btn = document.getElementById('workoutBtn');
+                btn.innerText = state.workout ? "DONE" : "PENDING";
+                btn.classList.toggle('active', state.workout);
+            }
+        }
+
+        function adjustTea(amount) {
+            state.tea = Math.max(0, state.tea + amount);
+            document.getElementById('teaDisplay').innerText = state.tea;
+        }
+
+        function adjustRE(amount) {
+            state.realEstateHours = Math.max(0, Math.round((state.realEstateHours + amount) * 10) / 10);
+            document.getElementById('reDisplay').innerText = state.realEstateHours.toFixed(1) + " hrs";
+        }
+
+        function saveToSheets() {
+            const scriptURL = "https://script.google.com/macros/s/AKfycbyVgqOaDgEySgPe2kF_O_Vh2kfm1gXmqztag9xa7wLnpx10Tw4ngnpmETsAkKUs7tmL/exec"; // <-- Paste your URL here
+
+            const now = new Date();
+            const payload = {
+                date: now.toLocaleDateString(),
+                time: now.toLocaleTimeString(),
+                soberDays: 96,
+                weight: state.weight,
+                fasting: state.fasting ? "Yes" : "No",
+                workout: state.workout ? "Completed" : "Missed",
+                tea: state.tea,
+                realEstateHours: state.realEstateHours
+            };
+
+            const btn = document.querySelector('.save-btn');
+            btn.innerText = "Saving...";
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.innerText = "SUCCESS! 🚀";
+                setTimeout(() => { btn.innerText = "Save To Google Sheets"; }, 2500);
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                btn.innerText = "ERROR - TRY AGAIN";
+                setTimeout(() => { btn.innerText = "Save To Google Sheets"; }, 2500);
+            });
+        }
+    </script>
+</body>
+</html>
