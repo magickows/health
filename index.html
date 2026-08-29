@@ -176,11 +176,13 @@
 <body>
 
     <div class="container">
+        <!-- Day 96 Anchor -->
         <div class="card sober-header">
             <span class="label" style="color: #d2d6dc;">Current Milestone</span>
             <h1>DAY 96 SOBER</h1>
         </div>
 
+        <!-- Weight Card -->
         <div class="card">
             <span class="label">⚖️ Weight (lbs)</span>
             <div class="row-spread">
@@ -192,6 +194,7 @@
             </div>
         </div>
 
+        <!-- Fasting Toggle -->
         <div class="card row-spread">
             <div>
                 <span class="label">⏳ Fasting Window</span>
@@ -200,6 +203,7 @@
             <button id="fastBtn" class="toggle-btn active" onclick="toggleState('fast')">ON TRACK</button>
         </div>
 
+        <!-- Workout Toggle & Routine -->
         <div class="card">
             <div class="row-spread">
                 <div>
@@ -217,6 +221,7 @@
             </ul>
         </div>
 
+        <!-- Dandelion Tea Counter -->
         <div class="card row-spread">
             <div>
                 <span class="label">🍵 Dandelion Tea</span>
@@ -229,6 +234,7 @@
             </div>
         </div>
 
+        <!-- Real Estate Hours -->
         <div class="card">
             <span class="label">🏠 Real Estate Study (Goal: 74 hrs left)</span>
             <div class="row-spread">
@@ -243,6 +249,7 @@
             </div>
         </div>
 
+        <!-- Wins Card -->
         <div class="card wins-card">
             <span class="label" style="color: #3fb950;">🏆 Wins For Today</span>
             <ul>
@@ -252,6 +259,7 @@
             </ul>
         </div>
 
+        <!-- Save Button -->
         <button class="save-btn" onclick="saveToSheets()">Save To Google Sheets</button>
     </div>
 
@@ -295,7 +303,7 @@
         }
 
         function saveToSheets() {
-            const scriptURL = "https://script.google.com/macros/s/AKfycbyVgqOaDgEySgPe2kF_O_Vh2kfm1gXmqztag9xa7wLnpx10Tw4ngnpmETsAkKUs7tmL/exec"; // <-- Paste your URL here
+            const scriptURL = "https://script.google.com/macros/s/AKfycbzWIJIz1PrXp1zK2M2nDOEX0KfveCgjISVU3VldUrHbP5tbQJ_0k0913WtrJEk83CdM/exec";
 
             const now = new Date();
             const payload = {
@@ -314,6 +322,7 @@
 
             fetch(scriptURL, {
                 method: 'POST',
+                redirect: 'follow',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             })
